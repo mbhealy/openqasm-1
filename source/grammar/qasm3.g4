@@ -105,11 +105,20 @@ noDesignatorType
     | timingType
     ;
 
-classicalType
+nonArrayType
     : singleDesignatorType designator
     | noDesignatorType
     | bitType designator?
     | 'complex' LBRACKET numericType RBRACKET
+    ;
+
+arrayType
+    : 'array' LBRACKET nonArrayType COMMA expressionList RBRACKET
+    ;
+
+classicalType
+    : nonArrayType
+    | arrayType
     ;
 
 // numeric OpenQASM types
@@ -139,11 +148,16 @@ complexDeclaration
     : 'complex' LBRACKET numericType RBRACKET Identifier equalsExpression?
     ;
 
+arrayDeclaration
+    : arrayType ( EQUALS LBRACE expressionList RBRACE )?
+    ;
+
 classicalDeclaration
     : singleDesignatorDeclaration
     | noDesignatorDeclaration
     | bitDeclaration
     | complexDeclaration
+    | arrayDeclaration
     ;
 
 classicalTypeList
