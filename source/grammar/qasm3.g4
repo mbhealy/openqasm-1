@@ -114,6 +114,7 @@ nonArrayType
 
 arrayType
     : 'array' LBRACKET nonArrayType COMMA expressionList RBRACKET
+    | 'array' LBRACKET nonArrayType COMMA '#dim' EQUALS expression RBRACKET
     ;
 
 classicalType
@@ -173,6 +174,7 @@ classicalArgument
     | 'creg' Identifier designator?
     | 'bit' designator? Identifier
     | 'complex' LBRACKET numericType RBRACKET Identifier
+    | ( 'const' | 'mutable' ) arrayType Identifier
     ;
 
 classicalArgumentList
@@ -411,6 +413,7 @@ expressionTerminator
     | timingIdentifier
     | LPAREN expression RPAREN
     | expressionTerminator LBRACKET expression RBRACKET
+    | '#' expressionTerminator LBRACKET expression RBRACKET
     ;
 /** End expression hierarchy **/
 
