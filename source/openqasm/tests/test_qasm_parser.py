@@ -1,5 +1,7 @@
 import dataclasses
 import textwrap
+from typing import Any, Optional
+
 import pytest
 
 from openqasm3.ast import (
@@ -93,7 +95,7 @@ def _with_annotations(node, annotations):
 class SpanGuard(QASMVisitor):
     """Ensure that we did not forget to set spans when we add new AST nodes"""
 
-    def visit(self, node: QASMNode):
+    def visit(self, node: QASMNode, context: Optional[Any] = None):
         assert node.span is not None
         return super().visit(node)
 
@@ -136,6 +138,14 @@ def test_qubit_declaration():
     qubit_declaration = program.statements[0]
     assert qubit_declaration.span == Span(1, 0, 1, 7)
     assert qubit_declaration.qubit.span == Span(1, 6, 1, 6)
+
+
+def test_terminal_node_span_positions():
+    source = "OPENQASM 3.0;\nqubit myqubit;"
+    program = parse(source)
+    qubit_declaration = program.statements[0]
+    assert qubit_declaration.qubit.span == Span(2, 6, 2, 12)
+    assert qubit_declaration.qubit.name == "myqubit"
 
 
 def test_bit_declaration():
